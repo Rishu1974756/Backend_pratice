@@ -1,0 +1,26 @@
+# Dependencies (Massive folder you sended by mistake)
+node_modules/
+jspm_packages/
+web_modules/
+
+# Environment variables (Your secret keys and passwords)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Operating System junk files
+.DS_Store
+Thumbs.db
+
+# Optional: Code editor configurations
+.vscode/
+.idea/
