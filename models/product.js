@@ -10,7 +10,12 @@ const productSchema=new mongoose.Schema(
         type:Number,
         required:true,
         min:0
-        }
+        },
+       createdBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "user",
+            required: true
+}
     },
     {timestamps:true}
 );
