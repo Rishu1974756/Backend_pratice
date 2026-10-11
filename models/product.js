@@ -11,6 +11,11 @@ const productSchema=new mongoose.Schema(
         required:true,
         min:0
         },
+        inStock:{
+            type:Boolean,
+            default:false
+
+        },
        createdBy: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "user",

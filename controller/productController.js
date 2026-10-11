@@ -1,24 +1,67 @@
 
 const Product = require("../models/product");
 
+
+
 exports.getProducts = async (req, res, next) => {
     try {
-        const {search}=req.query;
+        const {
+            search,
+            inStock,
+            minPrice,
+            maxPrice,
+            sort
+        } = req.query;
 
-        const page=Number(req.query.page)||1;
-        const limit=Number(req.query.limit)||5;
-        const filter={};
-        if(search){
-            filter.name={
-                $regex:search,$options:"i"
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 5;
+
+        const filter = {};
+
+        if (search) {
+        const safe = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); 
+           filter.name = {
+                $regex: search,
+                $options: "i"
             };
         }
-        const products = await Product.find(filter).sort(sort || "-createdAt").skip((page - 1) * limit).limit(limit);;
-        res.status(200).json(products);
+
+        if (inStock !== undefined) {
+            filter.inStock = inStock === "true";
+        }
+
+        if (minPrice || maxPrice) {
+            filter.price = {};
+
+            if (minPrice) {
+                filter.price.$gte = Number(minPrice);
+            }
+
+            if (maxPrice) {
+                filter.price.$lte = Number(maxPrice);
+            }
+        }
+
+        const total = await Product.countDocuments(filter);
+
+        const products = await Product.find(filter)
+            .sort(sort || "-createdAt")
+            .skip((page - 1) * limit)
+            .limit(limit);
+
+        res.status(200).json({
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit),
+            products
+        });
     } catch (err) {
         next(err);
     }
 };
+
+
 
 exports.getProduct = async (req, res, next) => {
     try {
